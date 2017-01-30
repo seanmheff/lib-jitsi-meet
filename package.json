@@ -46,7 +46,7 @@
     "karma-webpack": "1.8.1",
     "precommit-hook": "3.0.0",
     "string-replace-loader": "1.0.5",
-    "webpack": "1.14.0"
+    "webpack": "2.2.1"
   },
   "scripts": {
     "install": "webpack -p",
