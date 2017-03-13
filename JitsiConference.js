@@ -23,6 +23,7 @@ import Statistics from './modules/statistics/statistics';
 import TalkMutedDetection from './modules/TalkMutedDetection';
 import Transcriber from './modules/transcription/transcriber';
 import VideoType from './service/RTC/VideoType';
+import VideoSIPGW from './modules/videosipgw/VideoSIPGW';
 
 const logger = getLogger(__filename);
 
@@ -1625,5 +1626,37 @@ JitsiConference.prototype.broadcastEndpointMessage = function(payload) {
 JitsiConference.prototype.isConnectionInterrupted = function() {
     return this.connectionIsInterrupted;
 };
+
+/**
+ * Checks whether video SIP GW service is available.
+ *
+ * @returns {boolean} whether video SIP GW service is available.
+ */
+JitsiConference.prototype.isVideoSIPGWAvailable = function() {
+    return this.videoSIPGWHandler
+        && this.videoSIPGWHandler.isVideoSIPGWAvailable();
+};
+
+/**
+ * Creates a video SIP GW session and returns it if service is enabled.
+ *
+ * @param {string} sipAddress - The sip address to be used.
+ * @param {string} displayName - The display name to be used for this session.
+ * @returns {JitsiVideoSIPGWSession|null}
+ */
+JitsiConference.prototype.createVideoSIPGWSession
+    = function(sipAddress, displayName) {
+        if (!this.room) {
+            return null;
+        }
+
+        if (!this.videoSIPGWHandler) {
+            this.videoSIPGWHandler = new VideoSIPGW(this.room);
+            logger.info('Created VideoSIPGW');
+        }
+
+        return this.videoSIPGWHandler
+            .createVideoSIPGWSession(sipAddress, displayName);
+    };
 
 module.exports = JitsiConference;
